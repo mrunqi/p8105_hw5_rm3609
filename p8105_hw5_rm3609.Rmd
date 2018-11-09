@@ -13,19 +13,36 @@ library(tidyverse)
 #Problem 1
 
 Create a tidy dataframe containing data from all participants, including the subject ID, arm, and observations over time:
+Start with a dataframe containing all file names; the list.files function will help
 ```{r}
 long_data =
   tibble(
   files_name = list.files(path = "./data"))
+```
 
+Iterate over file names and read in data for each subject using purrr::map and saving the result as a new variable in the dataframe
+```{r}
 read_data = function(path){
   read.csv(str_c("./data/", path))
            }
 
 long_data = 
   long_data %>%  
-  mutate(data = map(long_data$files_name, read_data)) %>% 
-  unnest()
+  mutate(data = map(long_data$files_name, read_data))
+
+long_data
+```
+
+Tidy the result; manipulate file names to include control arm and subject ID, make sure weekly observations are “tidy”, and do any other tidying that’s necessary
+```{r}
+long_data = 
+  long_data %>%  
+  unnest() %>% 
+  janitor::clean_names() %>% 
+  gather(key = week, value = data, week_1:week_8) %>% 
+  separate(files_name, into = c("arm", "id"), sep = "_") %>% 
+  mutate(id = str_replace(id, ".csv",""),
+         week = str_replace(week, "week_", ""))
 
 long_data
 ```
