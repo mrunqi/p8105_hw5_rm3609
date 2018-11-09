@@ -59,13 +59,15 @@ Make a spaghetti plot showing observations on each subject over time, and commen
       y = "Data"
     )
 ```
-
+Experiment group has overall higher observation value.
 
 #Problem 2
-Describe the raw data.
+
 ```{r}
 homi_data = read.csv("./homicide-data.csv")
+
 ```
+
 
 Create a city_state variable (e.g. “Baltimore, MD”) and then summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
 ```{r}
