@@ -53,7 +53,55 @@ Make a spaghetti plot showing observations on each subject over time, and commen
   long_data %>% 
   ggplot(aes(x = as.numeric(week), y = data, color = id)) +
   geom_line() +
-  facet_grid(~arm)
+  facet_grid(~arm) +
+  labs(
+      x = "Week",
+      y = "Data"
+    )
 ```
 
+
 #Problem 2
+Describe the raw data.
+```{r}
+homi_data = read.csv("./homicide-data.csv")
+```
+
+Create a city_state variable (e.g. “Baltimore, MD”) and then summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
+```{r}
+homi_data =
+  homi_data %>% 
+  mutate(city_state = str_c(city, state, sep = ",")) 
+
+n_homi = 
+homi_data %>% 
+  group_by(city_state) %>% 
+  summarize(n_total = n(),
+            n_unsolved = sum(disposition %in% c("Closed without arrest", "Open/No arrest")))
+``` 
+
+For the city of Baltimore, MD, use the prop.test function to estimate the proportion of homicides that are unsolved; save the output of prop.test as an R object, apply the broom::tidy to this object and pull the estimated proportion and confidence intervals from the resulting tidy dataframe.
+```{r}
+n_baltimore =
+  n_homi %>% 
+  filter(city_state == "Baltimore,MD") 
+
+prop = 
+  prop.test(n_baltimore$n_unsolved, n_baltimore$n_total) %>% 
+  broom::tidy() %>% 
+  select(estimate, conf.low, conf.high)
+
+prop
+```
+
+Now run prop.test for each of the cities in your dataset, and extract both the proportion of unsolved homicides and the confidence interval for each. Do this within a “tidy” pipeline, making use of purrr::map, purrr::map2, list columns and unnest as necessary to create a tidy dataframe with estimated proportions and CIs for each city.
+```{r}
+
+```
+
+Create a plot that shows the estimates and CIs for each city – check out geom_errorbar for a way to add error bars based on the upper and lower limits. Organize cities according to the proportion of unsolved homicides.
+
+```{r}
+
+```
+
