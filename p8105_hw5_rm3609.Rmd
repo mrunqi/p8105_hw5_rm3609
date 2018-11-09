@@ -47,3 +47,13 @@ long_data =
 long_data
 ```
 
+Make a spaghetti plot showing observations on each subject over time, and comment on differences between groups.
+
+```{r}
+  long_data %>% 
+  ggplot(aes(x = as.numeric(week), y = data, color = id)) +
+  geom_line() +
+  facet_grid(~arm)
+```
+
+#Problem 2
